@@ -9,8 +9,10 @@ KDTree::~KDTree()
 
 void KDTree::deleteTreeRec(KDNode* root)
 {
-    if (root == NULL)
+    if (!root)
+    {
         return;
+    }
 
     deleteTreeRec(root->left);
     deleteTreeRec(root->right);
@@ -25,15 +27,15 @@ void KDTree::insertKDNode(const City& newCity)
 
 KDNode* KDTree::insertKDNodeRec (KDNode*& root, const City& newCity, int depth)
 {
-    if (root == NULL)
+    if (!root)
     {
         return new KDNode(newCity);
     }
 
     int curDim = depth % 2; //0 for lat, 1 for long
 
-    if ((curDim == 0 && newCity.coordinate.first < root->base.coordinate.first) ||
-        (curDim == 1 && newCity.coordinate.second < root->base.coordinate.second)) 
+    if ((!curDim && newCity.coordinate.first < root->base.coordinate.first) ||
+        (curDim && newCity.coordinate.second < root->base.coordinate.second)) 
     {
         root->left = insertKDNodeRec(root->left, newCity, depth + 1);
     } 
@@ -56,8 +58,10 @@ City KDTree::nearestNeighbour(std::pair<double, double> point)
 void KDTree::nearestNeighbourRec(City& res, KDNode* root, std::pair<double, double> point, int depth, double minDis)
 {
     if (!root)
+    {
         return;
-
+    }
+    
     double dist = calculate_distance(point, root->base.coordinate);
 
     if (dist < minDis)
@@ -76,7 +80,8 @@ void KDTree::nearestNeighbourRec(City& res, KDNode* root, std::pair<double, doub
     // Check if we need to explore the other side of the split
     double splitDis = (!curDim) ? fabs(point.first - root->base.coordinate.first) : fabs(point.second - root->base.coordinate.second);
 
-    if (splitDis < minDis) {
+    if (splitDis < minDis) 
+    {
         nearestNeighbourRec(res, other, point, depth + 1, minDis);
     }
 }
@@ -90,7 +95,7 @@ std::vector<City> KDTree::rangeSearch(std::pair<double, double> bottomLeft, std:
 
 void KDTree::rangeSearchRec(KDNode* root, std::pair<double, double> bottomLeft, std::pair<double, double> topRight, int depth, std::vector<City>& res)
 {
-    if(!root)
+    if (!root)
     {
         return;
     }
