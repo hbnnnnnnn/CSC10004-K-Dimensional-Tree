@@ -4,6 +4,6 @@
 struct City{
     std::string name;
     std::pair<double, double> coordinate;
-    std::string country;
-    long population;
+    // std::string country;
+    // long population;
 };
