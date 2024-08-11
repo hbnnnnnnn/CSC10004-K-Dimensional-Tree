@@ -119,9 +119,20 @@ int main() {
             }
         } else if (method == "export") {
             if (tokens.size() != 2) {
-                cerr << "Usage of '" << method << "': " << method << " [output: filePath/\"cmd\"/\"both\"]\n";
+                cerr << "Usage of '" << method << "': " << method << " [output: filePath/\"cmd\"]\n";
             } else {
-                cout << "";
+                string output = tokens[1];
+
+                if (output == "cmd") {
+                    cout << "...";
+                } else {
+                    ofstream ofs(output);
+                    if (!ofs) {
+                        cerr << "Unable to open file!\n";
+                        continue;
+                    }
+                    //...
+                }
             }
         } else if (method == "quit") {
             exit = true;
