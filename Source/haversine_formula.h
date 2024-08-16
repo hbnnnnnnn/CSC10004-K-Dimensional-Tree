@@ -1,5 +1,5 @@
-#ifndef HARVERSINE_FORMULA_H
-#define HARVERSINE_FORMULA_H
+#ifndef HARVERSINE_FORMULA_H_INCLUDED
+#define HARVERSINE_FORMULA_H_INCLUDED
 
 #include <numbers>
 #include <utility>
@@ -9,4 +9,4 @@ double calculate_distance(std::pair<double, double> pointA, std::pair<double, do
 
 double convert(double angle);
 
-#endif
+#endif // HARVERSINE_FORMULA_H_INCLUDED
