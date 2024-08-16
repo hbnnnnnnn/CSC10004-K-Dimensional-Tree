@@ -1,3 +1,6 @@
+#ifndef KDTREE_H_INCLUDED
+#define KDTREE_H_INCLUDED
+
 #include <vector>
 #include <cmath>
 #include <limits>
@@ -24,3 +27,5 @@ private:
     void rangeSearchRec(KDNode* root, std::pair<double, double> bottomLeft, std::pair<double,double> topRight, int depth, std::vector<City>& res);
     void nearestNeighbourRec(City& res, KDNode* root, std::pair<double, double> point, int depth, double minDis);
 };
+
+#endif // KDTREE_H_INCLUDED
