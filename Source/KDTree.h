@@ -14,9 +14,9 @@ struct KDNode {
     KDNode(City a) : base(a), left(NULL), right(NULL){};
 };
 
-struct KDTree{
+struct KDTree {
     KDNode* root;
-    KDTree() : root(NULL){};
+    KDTree() : root(NULL) {};
     ~KDTree();
     void insertKDNode(const City& newCity);
     std::vector<City> rangeSearch(std::pair<double, double> bottomLeft, std::pair<double,double> topRight);
