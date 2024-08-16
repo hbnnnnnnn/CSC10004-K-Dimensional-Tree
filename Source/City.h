@@ -4,6 +4,7 @@
 #include <utility>
 #include <string>
 #include <sstream>
+
 struct City{
     std::string name;
     std::pair<double, double> coordinate;
