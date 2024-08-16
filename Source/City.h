@@ -1,3 +1,6 @@
+#ifndef CITY_H
+#define CITY_H
+
 #include <utility>
 #include <string>
 #include <sstream>
@@ -8,3 +11,5 @@ struct City{
     long population;
     City extractInfo(std::string line);
 };
+
+#endif
