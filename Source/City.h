@@ -1,5 +1,5 @@
-#ifndef CITY_H
-#define CITY_H
+#ifndef CITY_H_INCLUDED
+#define CITY_H_INCLUDED
 
 #include <utility>
 #include <string>
@@ -12,4 +12,4 @@ struct City{
     City extractInfo(std::string line);
 };
 
-#endif
+#endif // CITY_H_INCLUDED
