@@ -9,21 +9,20 @@
 
 using namespace std;
 
-/* command: 
+/* command:
     - load the list of cities from csv file: -load [filepath]
-    - initialize a kd tree: -init 
     - insert a new city into the kd tree: -insert [city name]
     - insert from a csv file: -multi_insert [filepath]
     - nearest neighbor search: -nns [city name]
     - range query: -rq [bottomleft] [topright]
-    - export result: -save [output]
+    - export result to csv file: -save [output]
 */
 
 vector<string> splitString(const string& s, char delimiter = ' ') {
     stringstream ss(s);
     vector<string> tokens;
     string token;
-    
+
     while (getline(ss, token, delimiter)) {
         tokens.push_back(token);
     }
@@ -31,11 +30,22 @@ vector<string> splitString(const string& s, char delimiter = ' ') {
     return tokens;
 }
 
-City findCity(const vector<City>& cities, const string& cityName) {
-    for (City c : cities) {
-        if (c.name == cityName)
-            return c;
-    }
+// City findCity(const vector<City>& cities, const string& cityName) {
+//     for (City c : cities) {
+//         if (c.name == cityName)
+//             return c;
+//     }
+// }
+
+ostream& operator<<(ostream& os, const City& c) {
+    os << c.name;
+    return os;
+}
+
+bool validCity(map<string, City>& cities, const string& cityName) {
+    if (cities.find(cityName) != cities.end())
+        return true;
+    return false;
 }
 
 int main() {
@@ -43,12 +53,13 @@ int main() {
 
     cout << "List of Commands: \n";
     cout << "  - load the list of cities from csv file:     load [filepath]\n";
-    cout << "  - initialize a kd tree:                      -init\n";
-    cout << "  - insert a new city into the kd tree:        -insert [cityName]\n";
-    cout << "  - insert from a csv file:                    -multi_insert [filepath]\n";
-    cout << "  - nearest neighbor search:                   -nns [cityName]\n";
-    cout << "  - range query:                               -rquery [bottomleft] [topright]\n";
-    cout << "  - export result:                             -export [output]\n";
+    cout << "  - insert a new city into the kd tree:        insert [cityName]\n";
+    cout << "  - insert from a csv file:                    multi_insert [filepath]\n";
+    cout << "  - nearest neighbor search:                   nns [cityName]\n";
+    cout << "  - range query:                               rquery [bottomleft.x] [bottomleft.y] [topright.x] [topright.y]\n";
+    cout << "  - save result to csv file:                   save [filePath]\n";
+    cout << "  - terminate program:                         quit\n\n";
+    cout << "Main program:\n\n";
 
     KDTree tree;
     map<string, City> cities;
@@ -65,76 +76,112 @@ int main() {
         if (method == "load") {
             if (tokens.size() != 2) {
                 cerr << "Usage of '" << method << "': " << method << " [filePath]\n";
-            } else {
+            }
+            else {
                 string filePath = tokens[1];
                 ifstream ifs(filePath);
                 if (!ifs) {
                     cerr << "Unable to open file!\n";
                     continue;
                 }
-                
+
                 string s;
                 City c;
                 while (getline(ifs, s)) {
                     c = c.extractInfo(s);
                     cities[c.name] = c;
                 }
+
+                cout << "Loaded cities into database successfully!\n";
             }
-        } else if (method == "insert") {
+        }
+        else if (method == "insert") {
             if (tokens.size() != 2) {
                 cerr << "Usage of '" << method << "': " << method << " [cityName]\n";
-            } else {
-                string cityName = tokens[1];
-                City c = cities[cityName];
-                tree.insertKDNode(c);
             }
-        } else if (method == "multi_insert") {
+            else {
+                string cityName = tokens[1];
+                if (cities.find(cityName) != cities.end()) {
+                    City c = cities[cityName];
+                    tree.insertKDNode(c);
+                    cout << cityName << " has been inserted.\n";
+                }
+                else {
+                    cerr << cityName << " not found in the database.\n";
+                }
+            }
+        }
+        else if (method == "multi_insert") {
             if (tokens.size() != 2) {
                 cerr << "Usage of '" << method << "': " << method << " [filePath]\n";
-            } else {
-                string filePath = tokens[1];
-                ifstream ifs(filePath);
-                if (!ifs) {
-                    cerr << "Unable to open file!\n";
-                    continue;
-                }
-                
-                string s;
-                while (getline(ifs, s)) {
+                continue;
+            }
+            
+            string filePath = tokens[1];
+            ifstream ifs(filePath);
+            if (!ifs) {
+                cerr << "Unable to open file!\n";
+                continue;
+            }
+
+            string s;
+            while (getline(ifs, s)) {
+                if (cities.find(s) != cities.end()) {
                     City c = cities[s];
                     tree.insertKDNode(c);
+                    cout << s << " has been inserted.\n";
+                }
+                else {
+                    cerr << s << " not found in the database.\n";
                 }
             }
-        } else if (method == "nns") {
+        }
+        else if (method == "nns") {
             if (tokens.size() != 2) {
                 cerr << "Usage of '" << method << "': " << method << " [cityName]\n";
-            } else {
-                cout << "";
+                continue;
             }
-        } else if (method == "rquery") {
+            
+            string cityName = tokens[1];
+            if (!validCity(cities, cityName)) { // sua lai la kiem tra city co trong tree ch
+                cerr << "City not found in current tree.\n";
+                continue;
+            }
+
+            City c = cities[cityName];
+            City nearestNeighbor = tree.nearestNeighbour(c.coordinate);
+            cout << "Nearest neighbor found: " << nearestNeighbor.name << "\n";
+        }
+        else if (method == "rquery") {
             if (tokens.size() != 5) {
                 cerr << "Usage of '" << method << "': " << method << " [bottomLeft.first] [bottomLeft.second] [topRight.first] [topRight.second]\n";
-            } else {
-                cout << "";
+                continue;
             }
-        } else if (method == "export") {
+            
+            pair<int, int> bottomLeft = {stoi(tokens[1]), stoi(tokens[2])};
+            pair<int, int> topRight = {stoi(tokens[3]), stoi(tokens[4])};
+            vector<City> rangeQuery = tree.rangeSearch(bottomLeft, topRight);
+            for (City i : rangeQuery) {
+                cout << i << "\n";
+            }
+        }
+        else if (method == "save") {
             if (tokens.size() != 2) {
-                cerr << "Usage of '" << method << "': " << method << " [output: filePath/\"cmd\"]\n";
-            } else {
-                string output = tokens[1];
-
-                if (output == "cmd") {
-                    cout << "...";
-                } else {
-                    ofstream ofs(output);
-                    if (!ofs) {
-                        cerr << "Unable to open file!\n";
-                        continue;
-                    }
-                    //...
-                }
+                cerr << "Usage of '" << method << "': " << method << " [filePath]\n";
+                continue;
             }
-        } else if (method == "quit") {
+            
+            string filePath = tokens[1];
+
+            ofstream ofs(filePath);
+            if (!ofs) {
+                cerr << "Unable to open file!\n";
+                continue;
+            }
+            // luu kq vao csv
+        }
+        else if (method == "quit") {
+            cout << "Exiting...\n";
             exit = true;
         }
     }
