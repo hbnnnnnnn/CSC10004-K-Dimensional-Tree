@@ -1,6 +1,6 @@
 #include "City.h"
 
-City City::extractInfo(std::string line){
+City City::extractInfo(std::string line) {
     std::stringstream ss(line);
     City res;
     char tmp;
