@@ -11,7 +11,7 @@
 struct KDNode {
     City base;
     KDNode* left, * right;
-    KDNode(City a) : base(a), left(NULL), right(NULL){};
+    KDNode(City a) : base(a), left(NULL), right(NULL) {};
 };
 
 struct KDTree {
