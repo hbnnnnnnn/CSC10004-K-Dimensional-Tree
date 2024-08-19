@@ -5,7 +5,7 @@
 #include <string>
 #include <sstream>
 
-struct City{
+struct City {
     std::string name;
     std::pair<double, double> coordinate;
     std::string country;
