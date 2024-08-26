@@ -64,7 +64,7 @@ void KDTree::nearestNeighbourRec(City& res, KDNode* root, std::pair<double, doub
     
     double dist = calculate_distance(point, root->base.coordinate);
 
-    if (dist < minDis)
+    if (dist && dist < minDis)
     {
         minDis = dist;
         res = root->base;
