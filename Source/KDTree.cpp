@@ -25,6 +25,32 @@ void KDTree::insertKDNode(const City& newCity)
     root = insertKDNodeRec(root, newCity, 0);
 }
 
+bool KDTree::inKDTree(City& city)
+{
+    return inKDTreeRec(root, city, 0);
+}
+
+bool KDTree::inKDTreeRec(KDNode* root, City& city, int depth)
+{
+    if (!root) {
+        return false;
+    }
+
+    if (root->base.coordinate == city.coordinate) {
+        return true;
+    }
+
+    int curDim = depth % 2;
+
+    if ((!curDim && city.coordinate.first < root->base.coordinate.first) ||
+        (curDim && city.coordinate.second < root->base.coordinate.second)) 
+    {
+        return inKDTreeRec(root->left, city, depth + 1);
+    }
+
+    return inKDTreeRec(root->right, city, depth + 1);
+}
+
 KDNode* KDTree::insertKDNodeRec (KDNode*& root, const City& newCity, int depth)
 {
     if (!root)
