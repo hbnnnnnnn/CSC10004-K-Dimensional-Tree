@@ -39,7 +39,9 @@ KDNode* KDTree::insertKDNodeRec (KDNode*& root, const City& newCity, int depth)
     {
         root->left = insertKDNodeRec(root->left, newCity, depth + 1);
     } 
-    else 
+        
+    else if ((!curDim && newCity.coordinate.first > root->base.coordinate.first) ||
+        (curDim && newCity.coordinate.second > root->base.coordinate.second))
     {
         root->right = insertKDNodeRec(root->right, newCity, depth + 1);
     }
@@ -64,7 +66,7 @@ void KDTree::nearestNeighbourRec(City& res, KDNode* root, std::pair<double, doub
     
     double dist = calculate_distance(point, root->base.coordinate);
 
-    if (dist && dist < minDis)
+    if (dist < minDis)
     {
         minDis = dist;
         res = root->base;
