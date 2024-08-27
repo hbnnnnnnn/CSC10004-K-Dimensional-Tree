@@ -32,11 +32,13 @@ bool KDTree::inKDTree(City& city)
 
 bool KDTree::inKDTreeRec(KDNode* root, City& city, int depth)
 {
-    if (!root) {
+    if (!root) 
+    {
         return false;
     }
 
-    if (root->base.coordinate == city.coordinate) {
+    if (root->base.coordinate == city.coordinate) 
+    {
         return true;
     }
 
