@@ -88,11 +88,16 @@ int main() {
             }
         }
         else if (method == "insert") {
-            if (tokens.size() != 2) {
+            if (tokens.size() < 2) {
                 cout << "Usage of '" << method << "': " << usage[method] << "\n\n";
             }
             else {
-                string cityName = tokens[1];
+                string cityName;
+                int n = tokens.size();
+                for (int i = 1; i < n; i++) {
+                    cityName += (i == 1 ? "" : " ") + tokens[i];
+                }
+
                 if (cities.find(cityName) != cities.end()) {
                     City c = cities[cityName];
                     if (tree.inKDTree(c)) {
@@ -180,6 +185,9 @@ int main() {
         else if (method == "quit") {
             cout << "Exiting...\n";
             exit = true;
+        }
+        else {
+            cout << "Invalid command.\n\n";
         }
     }
 
