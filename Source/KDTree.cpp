@@ -130,23 +130,23 @@ void KDTree::rangeSearchRec(KDNode* root, std::pair<double, double> bottomLeft, 
         return;
     }
 
-    double nodeLat = root->base.coordinate.first;
-    double nodeLong = root->base.coordinate.second;
+    double nodeLong = root->base.coordinate.first;
+    double nodeLat = root->base.coordinate.second;
 
-    if (!(nodeLat < bottomLeft.first || nodeLat > topRight.first || nodeLong < bottomLeft.second || nodeLong > topRight.second))
+    if (!(nodeLong < bottomLeft.first || nodeLong > topRight.first || nodeLat < bottomLeft.second || nodeLat > topRight.second))
     {
         res.push_back(root->base);
     }
 
     int curDim = depth % 2;
     // Determine if we should explore the left subtree
-    if ((!curDim && bottomLeft.first <= nodeLat) || (curDim && bottomLeft.second <= nodeLong)) 
+    if ((!curDim && bottomLeft.first <= nodeLong) || (curDim && bottomLeft.second <= nodeLat)) 
     {
         rangeSearchRec(root->left, bottomLeft, topRight, depth + 1, res);
     }
 
     // Determine if we should explore the right subtree
-    if ((!curDim && topRight.first > nodeLat) || (curDim && topRight.second > nodeLong)) 
+    if ((!curDim && topRight.first > nodeLong) || (curDim && topRight.second > nodeLat)) 
     {
         rangeSearchRec(root->right, bottomLeft, topRight, depth + 1, res);
     }
