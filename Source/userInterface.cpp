@@ -9,12 +9,12 @@
 
 using namespace std;
 
-vector<string> splitString(const string& s, char delimiter = ' ') {
+vector<string> splitString(const string& s) {
     stringstream ss(s);
     vector<string> tokens;
     string token;
 
-    while (getline(ss, token, delimiter)) {
+    while (ss >> token) {
         tokens.push_back(token);
     }
 
@@ -65,16 +65,15 @@ int main() {
         vector<string> tokens = splitString(command);
         string method = tokens[0];
 
-        // Handling "load" command
         if (method == "load") {
             if (tokens.size() != 2) {
-                cerr << "Usage of '" << method << "': " << usage[method] << "\n\n";
+                cout << "Usage of '" << method << "': " << usage[method] << "\n\n";
             }
             else {
                 string filePath = tokens[1];
                 ifstream ifs(filePath);
                 if (!ifs) {
-                    cerr << "Unable to open file!\n";
+                    cout << "Unable to open file!\n";
                     continue;
                 }
 
@@ -90,7 +89,7 @@ int main() {
         }
         else if (method == "insert") {
             if (tokens.size() != 2) {
-                cerr << "Usage of '" << method << "': " << usage[method] << "\n\n";
+                cout << "Usage of '" << method << "': " << usage[method] << "\n\n";
             }
             else {
                 string cityName = tokens[1];
@@ -104,20 +103,20 @@ int main() {
                     cout << cityName << " has been inserted.\n\n";
                 }
                 else {
-                    cerr << cityName << " not found in the database.\n\n";
+                    cout << cityName << " not found in the database.\n\n";
                 }
             }
         }
         else if (method == "multi_insert") {
             if (tokens.size() != 2) {
-                cerr << "Usage of '" << method << "': " << usage[method] << "\n\n";
+                cout << "Usage of '" << method << "': " << usage[method] << "\n\n";
                 continue;
             }
 
             string filePath = tokens[1];
             ifstream ifs(filePath);
             if (!ifs) {
-                cerr << "Unable to open file!\n\n";
+                cout << "Unable to open file!\n\n";
                 continue;
             }
 
@@ -129,13 +128,13 @@ int main() {
                     cout << s << " has been inserted.\n\n";
                 }
                 else {
-                    cerr << s << " not found in the database.\n\n";
+                    cout << s << " not found in the database.\n\n";
                 }
             }
         }
         else if (method == "nns") {
             if (tokens.size() != 3) {
-                cerr << "Usage of '" << method << "': " << usage[method] << "\n\n";
+                cout << "Usage of '" << method << "': " << usage[method] << "\n\n";
                 continue;
             }
 
@@ -147,7 +146,7 @@ int main() {
         }
         else if (method == "rquery") {
             if (tokens.size() != 5) {
-                cerr << "Usage of '" << method << "': " << usage[method] << "\n\n";
+                cout << "Usage of '" << method << "': " << usage[method] << "\n\n";
                 continue;
             }
 
@@ -165,7 +164,7 @@ int main() {
         }
         else if (method == "save") {
             if (tokens.size() != 2) {
-                cerr << "Usage of '" << method << "': " << usage[method] << "\n\n";
+                cout << "Usage of '" << method << "': " << usage[method] << "\n\n";
                 continue;
             }
 
@@ -173,7 +172,7 @@ int main() {
 
             ofstream ofs(filePath);
             if (!ofs) {
-                cerr << "Unable to open file!\n\n";
+                cout << "Unable to open file!\n\n";
                 continue;
             }
             // luu kq vao csv
@@ -183,4 +182,6 @@ int main() {
             exit = true;
         }
     }
+
+    return 0;
 }
