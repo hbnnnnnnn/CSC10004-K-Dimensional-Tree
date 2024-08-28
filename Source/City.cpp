@@ -5,9 +5,9 @@ City City::extractInfo(std::string line) {
     City res;
     char tmp;
     std::getline(ss, res.name, ',');
-    ss >> res.coordinate.first;
+    ss >> res.coordinate.second; //lat
     ss >> tmp;
-    ss >> res.coordinate.second;
+    ss >> res.coordinate.first; //long
     ss >> tmp;
     std::getline(ss, res.country, ',');
     ss >> res.population;
