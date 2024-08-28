@@ -156,8 +156,8 @@ int main() {
                 continue;
             }
 
-            pair<int, int> bottomLeft = {stoi(tokens[1]), stoi(tokens[2])};
-            pair<int, int> topRight = {stoi(tokens[3]), stoi(tokens[4])};
+            pair<double, double> bottomLeft = {stod(tokens[1]), stod(tokens[2])};
+            pair<double, double> topRight = {stod(tokens[3]), stod(tokens[4])};
             vector<City> rangeQuery = tree.rangeSearch(bottomLeft, topRight);
             cout << "Result of range search: ";
             for (auto it = rangeQuery.begin(); it != rangeQuery.end(); it++) {
