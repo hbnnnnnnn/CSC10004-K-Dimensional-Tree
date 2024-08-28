@@ -33,16 +33,25 @@ bool cityInDatabase(map<string, City>& cities, const string& cityName) {
 }
 
 int main() {
+    map<string, string> usage;
+    usage["load"] = "load [filepath]";
+    usage["insert"] = "insert [cityName]";
+    usage["multi_insert"] = "multi_insert [filepath]";
+    usage["nns"] = "nns [latitude] [longitude]";
+    usage["rquery"] = "rquery [bottomleft.x] [bottomleft.y] [topright.x] [topright.y]";
+    usage["save"] = "save [filepath]";
+    usage["quit"] = "quit";
+
     cout << "KD-TREE CHALLENGE\n\n";
 
     cout << "List of Commands: \n";
-    cout << "  - load the list of cities from csv file:     load [filepath]\n";
-    cout << "  - insert a new city into the kd tree:        insert [cityName]\n";
-    cout << "  - insert from a csv file:                    multi_insert [filepath]\n";
-    cout << "  - nearest neighbor search:                   nns [cityName]\n";
-    cout << "  - range query:                               rquery [bottomleft.x] [bottomleft.y] [topright.x] [topright.y]\n";
-    cout << "  - save result to csv file:                   save [filePath]\n";
-    cout << "  - terminate program:                         quit\n\n";
+    cout << "  - load the list of cities from csv file:     " << usage["load"] << "\n";
+    cout << "  - insert a new city into the kd tree:        " << usage["insert"] << "\n";
+    cout << "  - insert from a csv file:                    " << usage["multi_insert"] << "\n";
+    cout << "  - nearest neighbor search:                   " << usage["nns"] << "\n";
+    cout << "  - range query:                               " << usage["rquery"] << "\n";
+    cout << "  - save result to csv file:                   " << usage["save"] << "\n";
+    cout << "  - terminate program:                         " << usage["quit"] << "\n";
     cout << "Main program:\n\n";
 
     KDTree tree;
@@ -59,7 +68,7 @@ int main() {
         // Handling "load" command
         if (method == "load") {
             if (tokens.size() != 2) {
-                cerr << "Usage of '" << method << "': " << method << " [filePath]\n\n";
+                cerr << "Usage of '" << method << "': " << usage[method] << "\n\n";
             }
             else {
                 string filePath = tokens[1];
@@ -81,12 +90,16 @@ int main() {
         }
         else if (method == "insert") {
             if (tokens.size() != 2) {
-                cerr << "Usage of '" << method << "': " << method << " [cityName]\n\n";
+                cerr << "Usage of '" << method << "': " << usage[method] << "\n\n";
             }
             else {
                 string cityName = tokens[1];
                 if (cities.find(cityName) != cities.end()) {
                     City c = cities[cityName];
+                    if (tree.inKDTree(c)) {
+                        cout << "The city has already been in the tree.\n\n";
+                        continue;
+                    }
                     tree.insertKDNode(c);
                     cout << cityName << " has been inserted.\n\n";
                 }
@@ -97,7 +110,7 @@ int main() {
         }
         else if (method == "multi_insert") {
             if (tokens.size() != 2) {
-                cerr << "Usage of '" << method << "': " << method << " [filePath]\n\n";
+                cerr << "Usage of '" << method << "': " << usage[method] << "\n\n";
                 continue;
             }
 
@@ -121,24 +134,25 @@ int main() {
             }
         }
         else if (method == "nns") {
-            if (tokens.size() != 2) {
-                cerr << "Usage of '" << method << "': " << method << " [cityName]\n";
+            if (tokens.size() != 3) {
+                cerr << "Usage of '" << method << "': " << usage[method] << "\n\n";
                 continue;
             }
 
-            string cityName = tokens[1];
-            if (!cityInDatabase(cities, cityName)) { // sua lai la kiem tra city co trong tree ch
-                cerr << "City not found in KD tree.\n\n";
-                continue;
-            }
+            double latitude = stod(tokens[1]);
+            double longitude = stod(tokens[2]);
 
-            City c = cities[cityName];
-            City nearestNeighbor = tree.nearestNeighbour(c.coordinate);
+            //if (!cityInDatabase(cities, cityName)) { // sua lai la kiem tra city co trong tree ch
+            //    cerr << "City not found in KD tree.\n\n";
+            //    continue;
+            //}
+
+            City nearestNeighbor = tree.nearestNeighbour({latitude, longitude});
             cout << "Nearest neighbor found: " << nearestNeighbor.name << "\n\n";
         }
         else if (method == "rquery") {
             if (tokens.size() != 5) {
-                cerr << "Usage of '" << method << "': " << method << " [bottomLeft.first] [bottomLeft.second] [topRight.first] [topRight.second]\n";
+                cerr << "Usage of '" << method << "': " << usage[method] << "\n\n";
                 continue;
             }
 
@@ -156,7 +170,7 @@ int main() {
         }
         else if (method == "save") {
             if (tokens.size() != 2) {
-                cerr << "Usage of '" << method << "': " << method << " [filePath]\n\n";
+                cerr << "Usage of '" << method << "': " << usage[method] << "\n\n";
                 continue;
             }
 
