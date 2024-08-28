@@ -60,7 +60,7 @@ KDNode* KDTree::insertKDNodeRec (KDNode*& root, const City& newCity, int depth)
         return new KDNode(newCity);
     }
 
-    int curDim = depth % 2; //0 for lat, 1 for long
+    int curDim = depth % 2; //0 for long, 1 for lat
 
     if ((!curDim && newCity.coordinate.first < root->base.coordinate.first) ||
         (curDim && newCity.coordinate.second < root->base.coordinate.second)) 
