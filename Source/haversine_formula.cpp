@@ -16,11 +16,11 @@ double calculate_distance(std::pair<double, double> pointA, std::pair<double, do
     const double earths_radius = 6371.0;
 
     // Get the difference between our two points then convert the difference into radians
-    double lat_delta = convert(pointA.first - pointB.first);
-    double lon_delta = convert(pointA.second - pointB.second);
+    double lon_delta = convert(pointA.first - pointB.first);
+    double lat_delta = convert(pointA.second - pointB.second);
 
-    double converted_lat1 = convert(pointA.first);
-    double converted_lat2 = convert(pointB.first);
+    double converted_lat1 = convert(pointA.second);
+    double converted_lat2 = convert(pointB.second);
 
     double a =
       pow(sin(lat_delta / 2), 2) + cos(converted_lat1) * cos(converted_lat2) * pow(sin(lon_delta / 2), 2);
