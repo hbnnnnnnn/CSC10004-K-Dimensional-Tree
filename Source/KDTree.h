@@ -24,7 +24,7 @@ struct KDTree {
     bool inKDTree(City& city);
 private:
     void deleteTreeRec(KDNode* root);
-    bool inKDTreeRec(KDNode* root, City& city);
+    bool inKDTreeRec(KDNode* root, City& city, int depth);
     KDNode* insertKDNodeRec (KDNode*& root, const City& newCity, int depth);
     void rangeSearchRec(KDNode* root, std::pair<double, double> bottomLeft, std::pair<double,double> topRight, int depth, std::vector<City>& res);
     void nearestNeighbourRec(City& res, KDNode* root, std::pair<double, double> point, int depth, double minDis);
