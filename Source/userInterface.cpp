@@ -142,11 +142,6 @@ int main() {
             double latitude = stod(tokens[1]);
             double longitude = stod(tokens[2]);
 
-            //if (!cityInDatabase(cities, cityName)) { // sua lai la kiem tra city co trong tree ch
-            //    cerr << "City not found in KD tree.\n\n";
-            //    continue;
-            //}
-
             City nearestNeighbor = tree.nearestNeighbour({latitude, longitude});
             cout << "Nearest neighbor found: " << nearestNeighbor.name << "\n\n";
         }
