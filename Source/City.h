@@ -7,7 +7,7 @@
 
 struct City {
     std::string name;
-    std::pair<double, double> coordinate;
+    std::pair<double, double> coordinate; //first : longitude, second : latitude 
     std::string country;
     long population;
     City extractInfo(std::string line);
