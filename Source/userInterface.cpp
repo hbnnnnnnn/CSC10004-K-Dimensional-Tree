@@ -39,7 +39,7 @@ int main() {
     usage["insert"] = "insert [cityName]";
     usage["multi_insert"] = "multi_insert [filepath]";
     usage["nns"] = "nns [latitude] [longitude]";
-    usage["rquery"] = "rquery [bottomleft.x] [bottomleft.y] [topright.x] [topright.y]";
+    usage["rquery"] = "rquery [bottomleft.long] [bottomleft.lat] [topright.long] [topright.lat]";
     usage["save"] = "save [filepath]";
     usage["quit"] = "quit";
 
@@ -69,6 +69,7 @@ int main() {
         getline(cin, command);
         vector<string> tokens = splitString(command);
         string method = tokens[0];
+        transform(method.begin(), method.end(), method.begin(), ::tolower);
 
         if (method == "load") {
             if (tokens.size() != 2) {
@@ -106,31 +107,41 @@ int main() {
         else if (method == "insert") {
             if (tokens.size() < 2) {
                 cout << messagePadding + "Usage of '" << method << "': " << usage[method] << "\n\n";
+                continue;
+            }
+
+            if (cities.size() == 0) {
+                cout << messagePadding + "Database found to be empty. Load it before proceeding.\n\n";
+                continue;
+            }
+            
+            string cityName;
+            int n = tokens.size();
+            for (int i = 1; i < n; i++) {
+                cityName += (i == 1 ? "" : " ") + tokens[i];
+            }
+
+            if (cities.find(cityName) != cities.end()) {
+                City c = cities[cityName];
+                if (tree.inKDTree(c)) {
+                    cout << messagePadding + cityName + " has already been in the tree.\n\n";
+                    continue;
+                }
+                tree.insertKDNode(c);
+                cout << messagePadding + cityName << " inserted.\n\n";
             }
             else {
-                string cityName;
-                int n = tokens.size();
-                for (int i = 1; i < n; i++) {
-                    cityName += (i == 1 ? "" : " ") + tokens[i];
-                }
-
-                if (cities.find(cityName) != cities.end()) {
-                    City c = cities[cityName];
-                    if (tree.inKDTree(c)) {
-                        cout << messagePadding + cityName + " has already been in the tree.\n\n";
-                        continue;
-                    }
-                    tree.insertKDNode(c);
-                    cout << messagePadding + cityName << " inserted.\n\n";
-                }
-                else {
-                    cout << messagePadding + cityName << " not found in the database.\n\n";
-                }
+                cout << messagePadding + cityName << " not found in the database.\n\n";
             }
         }
         else if (method == "multi_insert") {
             if (tokens.size() != 2) {
                 cout << messagePadding + "Usage of '" << method << "': " << usage[method] << "\n\n";
+                continue;
+            }
+
+            if (cities.size() == 0) {
+                cout << messagePadding + "Database found to be empty. Load it before proceeding.\n\n";
                 continue;
             }
 
@@ -183,6 +194,11 @@ int main() {
             pair<double, double> topRight = {stod(tokens[3]), stod(tokens[4])};
 
             vector<City> rangeQuery = tree.rangeSearch(bottomLeft, topRight);
+            if (rangeQuery.size() == 0) {
+                cout << messagePadding + "No cities found in this range.\n\n";
+                continue;
+            }
+
             cout << messagePadding + "Result of range search: ";
             for (auto it = rangeQuery.begin(); it != rangeQuery.end(); it++) {
                 if (it != rangeQuery.begin()) {
