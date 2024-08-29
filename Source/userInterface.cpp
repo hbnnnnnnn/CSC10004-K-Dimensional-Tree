@@ -35,6 +35,7 @@ bool cityInDatabase(map<string, City>& cities, const string& cityName) {
 int main() {
     map<string, string> usage;
     usage["load"] = "load [filepath]";
+    usage["rcs"] = "rcs [filepath]";
     usage["insert"] = "insert [cityName]";
     usage["multi_insert"] = "multi_insert [filepath]";
     usage["nns"] = "nns [latitude] [longitude]";
@@ -49,6 +50,7 @@ int main() {
 
     cout << "List of Commands: \n\n";
     cout << "  - load the list of cities from csv file:     " << usage["load"] << "\n";
+    cout << "  - reconstruct from existing file:            " << usage["rcs"] << "\n";
     cout << "  - insert a new city into the kd tree:        " << usage["insert"] << "\n";
     cout << "  - insert from a csv file:                    " << usage["multi_insert"] << "\n";
     cout << "  - nearest neighbor search:                   " << usage["nns"] << "\n";
@@ -90,6 +92,17 @@ int main() {
                 cout << messagePadding + "Database built successfully!\n\n";
             }
         }
+        else if (method == "rcs") {
+            if (tokens.size() != 2) {
+                cout << messagePadding + "Usage of '" << method << "': " << usage[method] << "\n\n";
+                continue;
+            }
+
+            string filePath = tokens[1];
+            tree.deserialize(filePath);
+            
+            cout << messagePadding + "Reconstructed successfully.\n\n";
+        }
         else if (method == "insert") {
             if (tokens.size() < 2) {
                 cout << messagePadding + "Usage of '" << method << "': " << usage[method] << "\n\n";
@@ -104,11 +117,11 @@ int main() {
                 if (cities.find(cityName) != cities.end()) {
                     City c = cities[cityName];
                     if (tree.inKDTree(c)) {
-                        cout << messagePadding + "The city has already been in the tree.\n\n";
+                        cout << messagePadding + cityName + " has already been in the tree.\n\n";
                         continue;
                     }
                     tree.insertKDNode(c);
-                    cout << messagePadding + cityName << " has been inserted.\n\n";
+                    cout << messagePadding + cityName << " inserted.\n\n";
                 }
                 else {
                     cout << messagePadding + cityName << " not found in the database.\n\n";
@@ -186,7 +199,9 @@ int main() {
                 cout << messagePadding + "Unable to open file!\n\n";
                 continue;
             }
-            // luu kq vao csv
+            
+            tree.serialize(filePath);
+            cout << messagePadding + "Tree saved.\n\n";
         }
         else if (method == "quit") {
             cout << messagePadding + "Exiting...\n";
