@@ -171,16 +171,13 @@ int main() {
 
             cout << "\n";
         }
-        else if (method == "nns")
-        {
-            if (tokens.size() != 3)
-            {
+        else if (method == "nns") {
+            if (tokens.size() != 3) {
                 cout << messagePadding + "Usage of '" << method << "': " << usage[method] << "\n\n";
                 continue;
             }
 
-            if (!tree.root)
-            {
+            if (!tree.root) {
                 cout << messagePadding + "Tree void of cities, please insert some before performing Nearest Neighbor Query.\n\n";
                 continue;
             }
