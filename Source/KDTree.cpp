@@ -224,6 +224,7 @@ KDNode* KDTree::getTree(std::vector<City> city) {
         } else if (pointer < size) {
             KDNode* nodeLeft = new KDNode(city[pointer]);
             top->left = nodeLeft;
+            q.push(nodeLeft);
         }
         pointer++;
         if (pointer < size && city[pointer].name == "empty") {
@@ -231,6 +232,7 @@ KDNode* KDTree::getTree(std::vector<City> city) {
         } else if (pointer < size) {
             KDNode* nodeRight = new KDNode(city[pointer]);
             top->right = nodeRight;
+            q.push(nodeRight);
         }
         pointer++;
     }
