@@ -171,13 +171,16 @@ int main() {
 
             cout << "\n";
         }
-        else if (method == "nns") {
-            if (tokens.size() != 3) {
+        else if (method == "nns")
+        {
+            if (tokens.size() != 3)
+            {
                 cout << messagePadding + "Usage of '" << method << "': " << usage[method] << "\n\n";
                 continue;
             }
 
-            if (!tree.root) {
+            if (!tree.root)
+            {
                 cout << messagePadding + "Tree void of cities, please insert some before performing Nearest Neighbor Query.\n\n";
                 continue;
             }
@@ -185,9 +188,10 @@ int main() {
             double latitude = stod(tokens[1]);
             double longitude = stod(tokens[2]);
 
-            City nearestNeighbor = tree.nearestNeighbour({longitude, latitude});
+            std::pair<City, double> nearestNeighbor = tree.nearestNeighbour({longitude, latitude});
 
-            cout << messagePadding + "Nearest neighbor found: " << nearestNeighbor.name << ".\n\n";
+            cout << messagePadding + "Nearest neighbor found: " << nearestNeighbor.first.name << "\n";
+            cout << messagePadding + "Distance: " << nearestNeighbor.second << " km\n\n";
         }
         else if (method == "rquery") {
             if (tokens.size() != 5) {
