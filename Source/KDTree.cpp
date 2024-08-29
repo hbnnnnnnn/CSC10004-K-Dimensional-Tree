@@ -32,12 +32,12 @@ bool KDTree::inKDTree(City& city)
 
 bool KDTree::inKDTreeRec(KDNode* root, City& city, int depth)
 {
-    if (!root) 
+    if (!root)
     {
         return false;
     }
 
-    if (root->base.coordinate == city.coordinate) 
+    if (root->base.coordinate == city.coordinate)
     {
         return true;
     }
@@ -45,7 +45,7 @@ bool KDTree::inKDTreeRec(KDNode* root, City& city, int depth)
     int curDim = depth % 2;
 
     if ((!curDim && city.coordinate.first < root->base.coordinate.first) ||
-        (curDim && city.coordinate.second < root->base.coordinate.second)) 
+        (curDim && city.coordinate.second < root->base.coordinate.second))
     {
         return inKDTreeRec(root->left, city, depth + 1);
     }
@@ -53,7 +53,7 @@ bool KDTree::inKDTreeRec(KDNode* root, City& city, int depth)
     return inKDTreeRec(root->right, city, depth + 1);
 }
 
-KDNode* KDTree::insertKDNodeRec (KDNode*& root, const City& newCity, int depth)
+KDNode* KDTree::insertKDNodeRec(KDNode*& root, const City& newCity, int depth)
 {
     if (!root)
     {
@@ -63,11 +63,11 @@ KDNode* KDTree::insertKDNodeRec (KDNode*& root, const City& newCity, int depth)
     int curDim = depth % 2; //0 for long, 1 for lat
 
     if ((!curDim && newCity.coordinate.first < root->base.coordinate.first) ||
-        (curDim && newCity.coordinate.second < root->base.coordinate.second)) 
+        (curDim && newCity.coordinate.second < root->base.coordinate.second))
     {
         root->left = insertKDNodeRec(root->left, newCity, depth + 1);
-    } 
-        
+    }
+
     else if ((!curDim && newCity.coordinate.first > root->base.coordinate.first) ||
         (curDim && newCity.coordinate.second > root->base.coordinate.second))
     {
@@ -91,7 +91,7 @@ void KDTree::nearestNeighbourRec(City& res, KDNode* root, std::pair<double, doub
     {
         return;
     }
-    
+
     double dist = calculate_distance(point, root->base.coordinate);
 
     if (dist < minDis)
@@ -110,13 +110,13 @@ void KDTree::nearestNeighbourRec(City& res, KDNode* root, std::pair<double, doub
     // Check if we need to explore the other side of the split
     double splitDis = (!curDim) ? fabs(point.first - root->base.coordinate.first) : fabs(point.second - root->base.coordinate.second);
 
-    if (splitDis < minDis) 
+    if (splitDis < minDis)
     {
         nearestNeighbourRec(res, other, point, depth + 1, minDis);
     }
 }
 
-std::vector<City> KDTree::rangeSearch(std::pair<double, double> bottomLeft, std::pair<double,double> topRight)
+std::vector<City> KDTree::rangeSearch(std::pair<double, double> bottomLeft, std::pair<double, double> topRight)
 {
     std::vector<City> res;
     rangeSearchRec(root, bottomLeft, topRight, 0, res);
@@ -140,13 +140,13 @@ void KDTree::rangeSearchRec(KDNode* root, std::pair<double, double> bottomLeft, 
 
     int curDim = depth % 2;
     // Determine if we should explore the left subtree
-    if ((!curDim && bottomLeft.first <= nodeLong) || (curDim && bottomLeft.second <= nodeLat)) 
+    if ((!curDim && bottomLeft.first <= nodeLong) || (curDim && bottomLeft.second <= nodeLat))
     {
         rangeSearchRec(root->left, bottomLeft, topRight, depth + 1, res);
     }
 
     // Determine if we should explore the right subtree
-    if ((!curDim && topRight.first > nodeLong) || (curDim && topRight.second > nodeLat)) 
+    if ((!curDim && topRight.first > nodeLong) || (curDim && topRight.second > nodeLat))
     {
         rangeSearchRec(root->right, bottomLeft, topRight, depth + 1, res);
     }
@@ -170,7 +170,8 @@ std::vector<City> KDTree::levelOrder(KDNode* root) {
         q.pop();
         if (top == NULL) {
             ans.push_back(null);
-        } else {
+        }
+        else {
             ans.push_back(top->base);
             q.push(top->left);
             q.push(top->right);
@@ -179,7 +180,7 @@ std::vector<City> KDTree::levelOrder(KDNode* root) {
     return ans;
 }
 
-void KDTree::serialize(const std::string &filename, KDNode* root) {
+void KDTree::serialize(const std::string& filename) {
     std::ofstream ofs;
     ofs.open(filename, std::ios::binary);
     if (!ofs) {
@@ -189,7 +190,7 @@ void KDTree::serialize(const std::string &filename, KDNode* root) {
     std::vector<City> city = levelOrder(root);
     size_t size = city.size();
     ofs.write(reinterpret_cast<const char*>(&size), sizeof(size));
-    for (const City &c : city) {
+    for (const City& c : city) {
         // write length of name and name
         size_t nameLength = c.name.size();
         ofs.write(reinterpret_cast<const char*>(&nameLength), sizeof(nameLength));
@@ -221,7 +222,8 @@ KDNode* KDTree::getTree(std::vector<City> city) {
         q.pop();
         if (pointer < size && city[pointer].name == "empty") {
             top->left = NULL;
-        } else if (pointer < size) {
+        }
+        else if (pointer < size) {
             KDNode* nodeLeft = new KDNode(city[pointer]);
             top->left = nodeLeft;
             q.push(nodeLeft);
@@ -229,17 +231,18 @@ KDNode* KDTree::getTree(std::vector<City> city) {
         pointer++;
         if (pointer < size && city[pointer].name == "empty") {
             top->right = NULL;
-        } else if (pointer < size) {
+        }
+        else if (pointer < size) {
             KDNode* nodeRight = new KDNode(city[pointer]);
             top->right = nodeRight;
             q.push(nodeRight);
         }
         pointer++;
     }
-return root;
+    return root;
 }
 
-KDNode* KDTree::deserialize(const std::string &filename) {
+KDNode* KDTree::deserialize(const std::string& filename) {
     std::ifstream ifs;
     ifs.open(filename, std::ios::binary);
     if (!ifs) {
@@ -249,7 +252,7 @@ KDNode* KDTree::deserialize(const std::string &filename) {
     size_t size;
     ifs.read(reinterpret_cast<char*>(&size), sizeof(size));
     std::vector<City> city(size);
-    for (City &c : city) {
+    for (City& c : city) {
         // Read length of name and name
         size_t nameLength;
         ifs.read(reinterpret_cast<char*>(&nameLength), sizeof(nameLength));
