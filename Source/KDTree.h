@@ -6,6 +6,9 @@
 #include <limits>
 #include <algorithm>
 #include <utility>
+#include <iostream>
+#include <fstream>
+#include <queue>
 
 #include "City.h"
 struct KDNode {
