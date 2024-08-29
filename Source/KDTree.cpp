@@ -77,12 +77,12 @@ KDNode* KDTree::insertKDNodeRec(KDNode*& root, const City& newCity, int depth)
     return root;
 }
 
-City KDTree::nearestNeighbour(std::pair<double, double> point)
+std::pair<City, double> KDTree::nearestNeighbour(std::pair<double, double> point)
 {
     City res = root->base;
     double minDist = std::numeric_limits<double>::max();
     nearestNeighbourRec(res, root, point, 0, minDist);
-    return res;
+    return {res, minDist};
 }
 
 void KDTree::nearestNeighbourRec(City& res, KDNode* root, std::pair<double, double> point, int depth, double& minDis)
@@ -109,7 +109,7 @@ void KDTree::nearestNeighbourRec(City& res, KDNode* root, std::pair<double, doub
 
     // Check if we need to explore the other side of the split
     double splitDis = (!curDim) ? fabs(point.first - root->base.coordinate.first) : fabs(point.second - root->base.coordinate.second);
-
+    
     if (splitDis < minDis)
     {
         nearestNeighbourRec(res, other, point, depth + 1, minDis);
