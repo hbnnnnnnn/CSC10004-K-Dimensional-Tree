@@ -161,10 +161,16 @@ int main() {
                 continue;
             }
 
+            if (!tree.root) {
+                cout << messagePadding + "Tree void of cities, please insert some before performing Nearest Neighbor Query.\n\n";
+                continue;
+            }
+
             double latitude = stod(tokens[1]);
             double longitude = stod(tokens[2]);
 
             City nearestNeighbor = tree.nearestNeighbour({longitude, latitude});
+
             cout << messagePadding + "Nearest neighbor found: " << nearestNeighbor.name << "\n\n";
         }
         else if (method == "rquery") {
