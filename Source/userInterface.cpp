@@ -42,16 +42,19 @@ int main() {
     usage["save"] = "save [filepath]";
     usage["quit"] = "quit";
 
+    string commandPadding = "  ";
+    string messagePadding = "    -> ";
+
     cout << "KD-TREE CHALLENGE\n\n";
 
-    cout << "List of Commands: \n";
+    cout << "List of Commands: \n\n";
     cout << "  - load the list of cities from csv file:     " << usage["load"] << "\n";
     cout << "  - insert a new city into the kd tree:        " << usage["insert"] << "\n";
     cout << "  - insert from a csv file:                    " << usage["multi_insert"] << "\n";
     cout << "  - nearest neighbor search:                   " << usage["nns"] << "\n";
     cout << "  - range query:                               " << usage["rquery"] << "\n";
     cout << "  - save result to csv file:                   " << usage["save"] << "\n";
-    cout << "  - terminate program:                         " << usage["quit"] << "\n";
+    cout << "  - terminate program:                         " << usage["quit"] << "\n\n";
     cout << "Main program:\n\n";
 
     KDTree tree;
@@ -60,20 +63,20 @@ int main() {
     string command;
 
     while (!exit) {
-        cout << "New command: ";
+        cout << commandPadding + "New command: ";
         getline(cin, command);
         vector<string> tokens = splitString(command);
         string method = tokens[0];
 
         if (method == "load") {
             if (tokens.size() != 2) {
-                cout << "Usage of '" << method << "': " << usage[method] << "\n\n";
+                cout << messagePadding + "Usage of '" << method << "': " << usage[method] << "\n\n";
             }
             else {
                 string filePath = tokens[1];
                 ifstream ifs(filePath);
                 if (!ifs) {
-                    cout << "Unable to open file!\n";
+                    cout << messagePadding + "Unable to open file!\n";
                     continue;
                 }
 
@@ -84,12 +87,12 @@ int main() {
                     cities[c.name] = c;
                 }
 
-                cout << "Loaded cities into database successfully!\n\n";
+                cout << messagePadding + "Database built successfully!\n\n";
             }
         }
         else if (method == "insert") {
             if (tokens.size() < 2) {
-                cout << "Usage of '" << method << "': " << usage[method] << "\n\n";
+                cout << messagePadding + "Usage of '" << method << "': " << usage[method] << "\n\n";
             }
             else {
                 string cityName;
@@ -101,27 +104,27 @@ int main() {
                 if (cities.find(cityName) != cities.end()) {
                     City c = cities[cityName];
                     if (tree.inKDTree(c)) {
-                        cout << "The city has already been in the tree.\n\n";
+                        cout << messagePadding + "The city has already been in the tree.\n\n";
                         continue;
                     }
                     tree.insertKDNode(c);
-                    cout << cityName << " has been inserted.\n\n";
+                    cout << messagePadding + cityName << " has been inserted.\n\n";
                 }
                 else {
-                    cout << cityName << " not found in the database.\n\n";
+                    cout << messagePadding + cityName << " not found in the database.\n\n";
                 }
             }
         }
         else if (method == "multi_insert") {
             if (tokens.size() != 2) {
-                cout << "Usage of '" << method << "': " << usage[method] << "\n\n";
+                cout << messagePadding + "Usage of '" << method << "': " << usage[method] << "\n\n";
                 continue;
             }
 
             string filePath = tokens[1];
             ifstream ifs(filePath);
             if (!ifs) {
-                cout << "Unable to open file!\n\n";
+                cout << messagePadding + "Unable to open file!\n\n";
                 continue;
             }
 
@@ -130,35 +133,38 @@ int main() {
                 if (cities.find(s) != cities.end()) {
                     City c = cities[s];
                     tree.insertKDNode(c);
-                    cout << s << " has been inserted.\n\n";
+                    cout << messagePadding + s << " has been inserted.\n";
                 }
                 else {
-                    cout << s << " not found in the database.\n\n";
+                    cout << messagePadding + s << " not found in the database.\n";
                 }
             }
+
+            cout << "\n";
         }
         else if (method == "nns") {
             if (tokens.size() != 3) {
-                cout << "Usage of '" << method << "': " << usage[method] << "\n\n";
+                cout << messagePadding + "Usage of '" << method << "': " << usage[method] << "\n\n";
                 continue;
             }
 
             double latitude = stod(tokens[1]);
             double longitude = stod(tokens[2]);
 
-            City nearestNeighbor = tree.nearestNeighbour({latitude, longitude});
-            cout << "Nearest neighbor found: " << nearestNeighbor.name << "\n\n";
+            City nearestNeighbor = tree.nearestNeighbour({longitude, latitude});
+            cout << messagePadding + "Nearest neighbor found: " << nearestNeighbor.name << "\n\n";
         }
         else if (method == "rquery") {
             if (tokens.size() != 5) {
-                cout << "Usage of '" << method << "': " << usage[method] << "\n\n";
+                cout << messagePadding + "Usage of '" << method << "': " << usage[method] << "\n\n";
                 continue;
             }
 
             pair<double, double> bottomLeft = {stod(tokens[1]), stod(tokens[2])};
             pair<double, double> topRight = {stod(tokens[3]), stod(tokens[4])};
+
             vector<City> rangeQuery = tree.rangeSearch(bottomLeft, topRight);
-            cout << "Result of range search: ";
+            cout << messagePadding + "Result of range search: ";
             for (auto it = rangeQuery.begin(); it != rangeQuery.end(); it++) {
                 if (it != rangeQuery.begin()) {
                     cout << ", ";
@@ -169,7 +175,7 @@ int main() {
         }
         else if (method == "save") {
             if (tokens.size() != 2) {
-                cout << "Usage of '" << method << "': " << usage[method] << "\n\n";
+                cout << messagePadding + "Usage of '" << method << "': " << usage[method] << "\n\n";
                 continue;
             }
 
@@ -177,17 +183,17 @@ int main() {
 
             ofstream ofs(filePath);
             if (!ofs) {
-                cout << "Unable to open file!\n\n";
+                cout << messagePadding + "Unable to open file!\n\n";
                 continue;
             }
             // luu kq vao csv
         }
         else if (method == "quit") {
-            cout << "Exiting...\n";
+            cout << messagePadding + "Exiting...\n";
             exit = true;
         }
         else {
-            cout << "Invalid command.\n\n";
+            cout << messagePadding + "Invalid command.\n\n";
         }
     }
 
