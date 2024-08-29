@@ -185,7 +185,7 @@ int main() {
             double latitude = stod(tokens[1]);
             double longitude = stod(tokens[2]);
 
-            std::pair<City, double> nearestNeighbor = tree.nearestNeighbour({longitude, latitude});
+            pair<City, double> nearestNeighbor = tree.nearestNeighbour({longitude, latitude});
 
             cout << messagePadding + "Nearest neighbor found: " << nearestNeighbor.first.name << "\n";
             cout << messagePadding + "Distance: " << nearestNeighbor.second << " km\n\n";
