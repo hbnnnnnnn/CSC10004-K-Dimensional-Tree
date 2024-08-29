@@ -99,6 +99,11 @@ int main() {
                 continue;
             }
 
+            if (tree.root) {
+                cout << messagePadding + "Recontruction only possible with an empty tree.\n\n";
+                continue;
+            }
+
             string filePath = tokens[1];
             tree.deserialize(filePath);
             
