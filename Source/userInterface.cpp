@@ -63,7 +63,40 @@ int main() {
     map<string, City> cities;
     bool exit = false;
     string command;
+    bool csv = false;
+    string outputFile;
+    
+    cout << commandPadding + "Specify a .csv file if you wish to output your results to one? This includes any results related to Nearest Neighbor Query or Range Query. Otherwise, type anything to proceed: ";
+    getline(cin, command);
+    int length = command.length();
 
+    if (length > 4) {
+        string lastFour = command.substr(length - 4, 4);
+        vector<string> tokens = splitString(command);
+
+        if (lastFour == ".csv" && tokens.size() == 1) {
+            string filePath = command;
+            ofstream ofs(filePath);
+
+            if (!ofs) {
+                cout << messagePadding + "Unable to open file!\n";
+            }
+            else {
+                csv = true;
+                outputFile = filePath;
+            }
+
+            ofs.close();
+        }
+    }
+
+    if (!csv) {
+        cout << messagePadding + "Results will be displayed to the console.\n\n";
+    }
+    else {
+        cout << messagePadding + "Results will be saved to the .csv file.\n\n";
+    }
+    
     while (!exit) {
         cout << commandPadding + "New command: ";
         getline(cin, command);
@@ -106,7 +139,7 @@ int main() {
 
             string filePath = tokens[1];
             tree.deserialize(filePath);
-            
+
             cout << messagePadding + "Reconstructed successfully.\n\n";
         }
         else if (method == "insert") {
@@ -119,7 +152,7 @@ int main() {
                 cout << messagePadding + "Database found to be empty. Load it before proceeding.\n\n";
                 continue;
             }
-            
+
             string cityName;
             int n = tokens.size();
             for (int i = 1; i < n; i++) {
@@ -187,8 +220,19 @@ int main() {
 
             pair<City, double> nearestNeighbor = tree.nearestNeighbour({longitude, latitude});
 
-            cout << messagePadding + "Nearest neighbor found: " << nearestNeighbor.first.name << "\n";
-            cout << messagePadding + "Distance: " << nearestNeighbor.second << " km\n\n";
+            if (!csv) {
+                cout << messagePadding + "Nearest neighbor found: " << nearestNeighbor.first.name << ".\n";
+                cout << messagePadding + "Distance: " << nearestNeighbor.second << "km.\n\n";
+            }
+            else {
+                ofstream ofs(outputFile, ios::app);
+                ofs << "Nearest neighbor from <"  << latitude << ", " << longitude << "> found: " << nearestNeighbor.first.name << ".\n";
+                ofs << "Distance: " << nearestNeighbor.second << "km.\n\n";
+                ofs.close();
+
+                cout << messagePadding + "Results saved to .csv file.\n\n";
+            }
+            
         }
         else if (method == "rquery") {
             if (tokens.size() != 5) {
@@ -205,14 +249,31 @@ int main() {
                 continue;
             }
 
-            cout << messagePadding + "Result of range search: ";
-            for (auto it = rangeQuery.begin(); it != rangeQuery.end(); it++) {
-                if (it != rangeQuery.begin()) {
-                    cout << ", ";
+            if (!csv) {
+                cout << messagePadding + "Result of range search: ";
+                for (auto it = rangeQuery.begin(); it != rangeQuery.end(); it++) {
+                    if (it != rangeQuery.begin()) {
+                        cout << ", ";
+                    }
+                    cout << *it;
                 }
-                cout << *it;
+                cout << ".\n\n";
             }
-            cout << "\n\n";
+            else {
+                ofstream ofs(outputFile, ios::app);
+                ofs << "Result of range search <" << bottomLeft.first << ", " << bottomLeft.second << "> <" << topRight.first << ", " << topRight.second << ">: ";
+                for (auto it = rangeQuery.begin(); it != rangeQuery.end(); it++) {
+                    if (it != rangeQuery.begin()) {
+                        ofs << ", ";
+                    }
+                    ofs << *it;
+                }
+                ofs << ".\n\n";
+                ofs.close();
+
+                cout << messagePadding + "Results saved to .csv file.\n\n";
+            }
+            
         }
         else if (method == "save") {
             if (tokens.size() != 2) {
@@ -227,7 +288,7 @@ int main() {
                 cout << messagePadding + "Unable to open file!\n\n";
                 continue;
             }
-            
+
             tree.serialize(filePath);
             cout << messagePadding + "Tree saved.\n\n";
         }
