@@ -151,3 +151,122 @@ void KDTree::rangeSearchRec(KDNode* root, std::pair<double, double> bottomLeft, 
         rangeSearchRec(root->right, bottomLeft, topRight, depth + 1, res);
     }
 }
+
+std::vector<City> KDTree::levelOrder(KDNode* root) {
+    std::vector<City> ans;
+    if (root == NULL) {
+        return ans;
+    }
+    City null;
+    null.name = "empty";
+    null.coordinate = {0, 0};
+    null.country = "empty";
+    null.population = 0;
+
+    std::queue<KDNode*> q;
+    q.push(root);
+    while (!q.empty()) {
+        KDNode* top = q.front();
+        q.pop();
+        if (top == NULL) {
+            ans.push_back(null);
+        } else {
+            ans.push_back(top->base);
+            q.push(top->left);
+            q.push(top->right);
+        }
+    }
+    return ans;
+}
+
+void KDTree::serialize(const std::string &filename, KDNode* root) {
+    std::ofstream ofs;
+    ofs.open(filename, std::ios::binary);
+    if (!ofs) {
+        std::cerr << "Error opening file for write";
+        return;
+    }
+    std::vector<City> city = levelOrder(root);
+    size_t size = city.size();
+    ofs.write(reinterpret_cast<const char*>(&size), sizeof(size));
+    for (const City &c : city) {
+        // write length of name and name
+        size_t nameLength = c.name.size();
+        ofs.write(reinterpret_cast<const char*>(&nameLength), sizeof(nameLength));
+        ofs.write(c.name.c_str(), nameLength);
+        // write coordinate
+        ofs.write(reinterpret_cast<const char*>(&c.coordinate.first), sizeof(c.coordinate.first));
+        ofs.write(reinterpret_cast<const char*>(&c.coordinate.second), sizeof(c.coordinate.second));
+        // write length of country name and country name
+        size_t countryLength = c.country.size(); // Length of country name
+        ofs.write(reinterpret_cast<const char*>(&countryLength), sizeof(countryLength));
+        ofs.write(c.country.c_str(), countryLength);
+        // write population
+        ofs.write(reinterpret_cast<const char*>(&c.population), sizeof(c.population));
+    }
+    return;
+}
+
+KDNode* KDTree::getTree(std::vector<City> city) {
+    int size = city.size();
+    if (size == 0) {
+        return NULL;
+    }
+    std::queue<KDNode*> q;
+    KDNode* root = new KDNode(city[0]);
+    q.push(root);
+    int pointer = 1;
+    while (!q.empty() && pointer < size) {
+        KDNode* top = q.front();
+        q.pop();
+        if (city[pointer].name == "empty") {
+            top->left == NULL;
+        } else {
+            KDNode* nodeLeft = new KDNode(city[pointer]);
+            top->left = nodeLeft;
+        }
+        pointer++;
+        if (city[pointer].name == "empty") {
+            top->right == NULL;
+        } else {
+            KDNode* nodeRight = new KDNode(city[pointer]);
+            top->right = nodeRight;
+        }
+        pointer++;
+    }
+    return root;
+}
+
+KDNode* KDTree::deserialize(const std::string &filename) {
+    std::ifstream ifs;
+    ifs.open(filename, std::ios::binary);
+    if (!ifs) {
+        std::cerr << "Error opening file";
+        return NULL;
+    }
+    size_t size;
+    ifs.read(reinterpret_cast<char*>(&size), sizeof(size));
+    std::vector<City> city(size);
+    for (City &c : city) {
+        // Read length of name and name
+        size_t nameLength;
+        ifs.read(reinterpret_cast<char*>(&nameLength), sizeof(nameLength));
+        c.name.resize(nameLength);
+        ifs.read(&c.name[0], nameLength);
+
+        // Read coordinate
+        ifs.read(reinterpret_cast<char*>(&c.coordinate.first), sizeof(c.coordinate.first));
+        ifs.read(reinterpret_cast<char*>(&c.coordinate.second), sizeof(c.coordinate.second));
+
+        // Read length of country name and country name
+        size_t countryLength;
+        ifs.read(reinterpret_cast<char*>(&countryLength), sizeof(countryLength));
+        c.country.resize(countryLength);
+        ifs.read(&c.country[0], countryLength);
+
+        // Read population
+        ifs.read(reinterpret_cast<char*>(&c.population), sizeof(c.population));
+    }
+    KDNode* root = getTree(city);
+    return root;
+}
