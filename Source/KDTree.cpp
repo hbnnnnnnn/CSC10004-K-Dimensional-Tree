@@ -219,22 +219,22 @@ KDNode* KDTree::getTree(std::vector<City> city) {
     while (!q.empty() && pointer < size) {
         KDNode* top = q.front();
         q.pop();
-        if (city[pointer].name == "empty") {
-            top->left == NULL;
-        } else {
+        if (pointer < size && city[pointer].name == "empty") {
+            top->left = NULL;
+        } else if (pointer < size) {
             KDNode* nodeLeft = new KDNode(city[pointer]);
             top->left = nodeLeft;
         }
         pointer++;
-        if (city[pointer].name == "empty") {
-            top->right == NULL;
-        } else {
+        if (pointer < size && city[pointer].name == "empty") {
+            top->right = NULL;
+        } else if (pointer < size) {
             KDNode* nodeRight = new KDNode(city[pointer]);
             top->right = nodeRight;
         }
         pointer++;
     }
-    return root;
+return root;
 }
 
 KDNode* KDTree::deserialize(const std::string &filename) {
