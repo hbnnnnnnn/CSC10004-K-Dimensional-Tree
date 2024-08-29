@@ -23,7 +23,7 @@ struct KDTree {
     ~KDTree();
     void insertKDNode(const City& newCity);
     std::vector<City> rangeSearch(std::pair<double, double> bottomLeft, std::pair<double,double> topRight);
-    City nearestNeighbour(std::pair<double, double> point);
+    std::pair<City, double> nearestNeighbour(std::pair<double, double> point);
     bool inKDTree(City& city);
     void serialize(const std::string &filename);
     void deserialize(const std::string &filename);
