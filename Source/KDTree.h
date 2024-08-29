@@ -22,12 +22,16 @@ struct KDTree {
     std::vector<City> rangeSearch(std::pair<double, double> bottomLeft, std::pair<double,double> topRight);
     City nearestNeighbour(std::pair<double, double> point);
     bool inKDTree(City& city);
+    void serialize(const std::string &filename, KDNode* root);
+    KDNode* deserialize(const std::string &filename);
 private:
     void deleteTreeRec(KDNode* root);
     bool inKDTreeRec(KDNode* root, City& city, int depth);
     KDNode* insertKDNodeRec (KDNode*& root, const City& newCity, int depth);
     void rangeSearchRec(KDNode* root, std::pair<double, double> bottomLeft, std::pair<double,double> topRight, int depth, std::vector<City>& res);
     void nearestNeighbourRec(City& res, KDNode* root, std::pair<double, double> point, int depth, double minDis);
+    std::vector<City> levelOrder(KDNode* root);
+    KDNode* getTree(std::vector<City> city);
 };
 
 #endif // KDTREE_H_INCLUDED
