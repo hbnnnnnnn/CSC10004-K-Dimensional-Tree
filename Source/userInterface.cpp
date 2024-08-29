@@ -182,7 +182,7 @@ int main() {
 
             City nearestNeighbor = tree.nearestNeighbour({longitude, latitude});
 
-            cout << messagePadding + "Nearest neighbor found: " << nearestNeighbor.name << "\n\n";
+            cout << messagePadding + "Nearest neighbor found: " << nearestNeighbor.name << ".\n\n";
         }
         else if (method == "rquery") {
             if (tokens.size() != 5) {
