@@ -170,8 +170,7 @@ std::vector<City> KDTree::levelOrder(KDNode* root) {
         q.pop();
         if (top == NULL) {
             ans.push_back(null);
-        }
-        else {
+        } else {
             ans.push_back(top->base);
             q.push(top->left);
             q.push(top->right);
@@ -180,7 +179,7 @@ std::vector<City> KDTree::levelOrder(KDNode* root) {
     return ans;
 }
 
-void KDTree::serialize(const std::string& filename) {
+void KDTree::serialize(const std::string &filename) {
     std::ofstream ofs;
     ofs.open(filename, std::ios::binary);
     if (!ofs) {
@@ -190,7 +189,7 @@ void KDTree::serialize(const std::string& filename) {
     std::vector<City> city = levelOrder(root);
     size_t size = city.size();
     ofs.write(reinterpret_cast<const char*>(&size), sizeof(size));
-    for (const City& c : city) {
+    for (const City &c : city) {
         // write length of name and name
         size_t nameLength = c.name.size();
         ofs.write(reinterpret_cast<const char*>(&nameLength), sizeof(nameLength));
@@ -222,8 +221,7 @@ KDNode* KDTree::getTree(std::vector<City> city) {
         q.pop();
         if (pointer < size && city[pointer].name == "empty") {
             top->left = NULL;
-        }
-        else if (pointer < size) {
+        } else if (pointer < size) {
             KDNode* nodeLeft = new KDNode(city[pointer]);
             top->left = nodeLeft;
             q.push(nodeLeft);
@@ -231,8 +229,7 @@ KDNode* KDTree::getTree(std::vector<City> city) {
         pointer++;
         if (pointer < size && city[pointer].name == "empty") {
             top->right = NULL;
-        }
-        else if (pointer < size) {
+        } else if (pointer < size) {
             KDNode* nodeRight = new KDNode(city[pointer]);
             top->right = nodeRight;
             q.push(nodeRight);
@@ -242,17 +239,17 @@ KDNode* KDTree::getTree(std::vector<City> city) {
     return root;
 }
 
-KDNode* KDTree::deserialize(const std::string& filename) {
+void KDTree::deserialize(const std::string &filename) {
     std::ifstream ifs;
     ifs.open(filename, std::ios::binary);
     if (!ifs) {
         std::cerr << "Error opening file";
-        return NULL;
+        return;
     }
     size_t size;
     ifs.read(reinterpret_cast<char*>(&size), sizeof(size));
     std::vector<City> city(size);
-    for (City& c : city) {
+    for (City &c : city) {
         // Read length of name and name
         size_t nameLength;
         ifs.read(reinterpret_cast<char*>(&nameLength), sizeof(nameLength));
@@ -272,6 +269,6 @@ KDNode* KDTree::deserialize(const std::string& filename) {
         // Read population
         ifs.read(reinterpret_cast<char*>(&c.population), sizeof(c.population));
     }
-    KDNode* root = getTree(city);
-    return root;
+    root = getTree(city);
+    
 }
