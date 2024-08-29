@@ -85,7 +85,7 @@ City KDTree::nearestNeighbour(std::pair<double, double> point)
     return res;
 }
 
-void KDTree::nearestNeighbourRec(City& res, KDNode* root, std::pair<double, double> point, int depth, double minDis)
+void KDTree::nearestNeighbourRec(City& res, KDNode* root, std::pair<double, double> point, int depth, double& minDis)
 {
     if (!root)
     {
