@@ -194,6 +194,10 @@ int main() {
             while (getline(ifs, s)) {
                 if (cities.find(s) != cities.end()) {
                     City c = cities[s];
+                    if (tree.inKDTree(c)) {
+                        cout << messagePadding + cityName + " has already been in the tree.\n\n";
+                        continue;
+                    }
                     tree.insertKDNode(c);
                     cout << messagePadding + s << " has been inserted.\n";
                 }
