@@ -34,13 +34,13 @@ bool cityInDatabase(map<string, City>& cities, const string& cityName) {
 
 int main() {
     map<string, string> usage;
-    usage["load"] = "load [filepath]";
-    usage["rcs"] = "rcs [filepath]";
-    usage["insert"] = "insert [cityName]";
-    usage["multi_insert"] = "multi_insert [filepath]";
+    usage["load"] = "load [.csv file]";
+    usage["rcs"] = "rcs [.bin file]";
+    usage["insert"] = "insert [city name]";
+    usage["multi_insert"] = "multi_insert [.csv file]";
     usage["nns"] = "nns [latitude] [longitude]";
     usage["rquery"] = "rquery [bottomleft.long] [bottomleft.lat] [topright.long] [topright.lat]";
-    usage["save"] = "save [filepath]";
+    usage["save"] = "save [.bin file]";
     usage["quit"] = "quit";
 
     string commandPadding = "  ";
@@ -195,7 +195,7 @@ int main() {
                 if (cities.find(s) != cities.end()) {
                     City c = cities[s];
                     if (tree.inKDTree(c)) {
-                        cout << messagePadding + s + " has already been in the tree.\n\n";
+                        cout << messagePadding + s + " has already been in the tree.\n";
                         continue;
                     }
                     tree.insertKDNode(c);
