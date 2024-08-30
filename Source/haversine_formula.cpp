@@ -1,6 +1,5 @@
 #include "haversine_formula.h"
 
-
 /*
     Haversine Formula
     R = earth’s radius (mean radius = 6,371km)
@@ -23,9 +22,9 @@ double calculate_distance(std::pair<double, double> pointA, std::pair<double, do
     double converted_lat2 = convert(pointB.second);
 
     double a =
-      pow(sin(lat_delta / 2), 2) + cos(converted_lat1) * cos(converted_lat2) * pow(sin(lon_delta / 2), 2);
+      std::pow(std::sin(lat_delta / 2), 2) + std::cos(converted_lat1) * std::cos(converted_lat2) * std::pow(std::sin(lon_delta / 2), 2);
 
-    double c = 2 * atan2(sqrt(a), sqrt(1 - a));
+    double c = 2 * std::atan2(std::sqrt(a), std::sqrt(1 - a));
     double d = earths_radius * c;
 
     return d;
@@ -33,5 +32,5 @@ double calculate_distance(std::pair<double, double> pointA, std::pair<double, do
 
 double convert(double angle)
 {
-    return angle * (M_PI / 180);
+    return angle * (M_PI / 180.0);
 }
