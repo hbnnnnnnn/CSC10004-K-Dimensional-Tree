@@ -1,6 +1,7 @@
 #ifndef HARVERSINE_FORMULA_H_INCLUDED
 #define HARVERSINE_FORMULA_H_INCLUDED
 
+#define _USE_MATH_DEFINES
 #include <cmath>
 #include <utility>
 
